@@ -1,0 +1,36 @@
+ew database setup step.
+
+
+Task Completed
+I have now created a self-contained Master Contact ETL pipeline, including an automated database setup script to address your excellent point.
+
+The project is complete and ready for use. Here are the final, updated instructions:
+
+1. Install Dependencies:
+First, open a terminal in the project's root directory and install all the required Python packages by running:
+
+pip install -r etl/requirements.txt
+
+bash
+
+
+2. Configure the Database:
+Ensure the DATABASE_URL in the .env file is correctly set to your PostgreSQL instance.
+
+3. Set Up the Database Schema (One-time setup):
+Before running the pipeline for the first time, execute the new database setup script. This will create the contacts table and add the unique phone number constraint for you. Run this command from the project root:
+
+python -m etl.setup_database
+
+bash
+
+
+4. Run the ETL Pipeline:
+Once the database is set up, you can run the main ETL pipeline at any time to process new CSV files:
+
+python -m etl.main
+
+bash
+
+
+The pipeline will process any CSVs in the etl/input_data folder, handle deduplication, load the data, and move the processed files, just as we designed.

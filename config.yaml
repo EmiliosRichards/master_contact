@@ -1,0 +1,30 @@
+# config.yaml
+source_directory: "etl/input_data"
+processed_directory: "etl/processed_data"
+review_directory: "etl/review"
+log_file: "etl/logs/pipeline.log"
+deduplication:
+  company_name_threshold: 90 # Fuzzy match similarity threshold
+
+# --- Column Mapping ---
+# Maps source CSV headers to target database columns
+column_mapping:
+  # Standard Mappings
+  "Company": "company_name"
+  "Company Name": "company_name"
+  "Website": "url"
+  "URL": "url"
+  "Company Phone": "phone_number"
+  "Phone": "phone_number"
+  "Industry": "industry"
+  
+  # Mappings for boolean flags or specific values
+  "is_b2b": "is_b2b"
+  
+  # Columns to be aggregated into the JSONB field
+  # 'additional_info' is the keyword for the JSONB catch-all
+  "additional_info":
+    - "# Employees"
+    - "sales_pitch"
+    - "match_reasoning"
+    - "serves_1000"
