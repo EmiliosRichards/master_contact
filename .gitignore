@@ -7,3 +7,8 @@ __pycache__/
 
 # Virtual environment
 .venv/
+
+# duplicate files
+dropped_duplicates/
+
+review/

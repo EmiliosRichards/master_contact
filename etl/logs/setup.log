@@ -1,0 +1,72 @@
+2025-07-07 10:00:57,860 - INFO - root - Logging configured successfully.
+2025-07-07 10:00:57,860 - INFO - __main__ - Starting database setup...
+2025-07-07 10:00:57,861 - ERROR - etl.scripts.load - DATABASE_URL environment variable not set.
+2025-07-07 10:00:57,861 - CRITICAL - __main__ - An error occurred during database setup: DATABASE_URL is not configured.
+2025-07-07 10:01:20,043 - INFO - root - Logging configured successfully.
+2025-07-07 10:01:20,044 - INFO - __main__ - Starting database setup...
+2025-07-07 10:01:20,404 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:01:21,474 - CRITICAL - __main__ - An error occurred during database setup: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5433 failed: FATAL:  password authentication failed for user "user"
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-07 10:03:08,940 - INFO - root - Logging configured successfully.
+2025-07-07 10:03:08,940 - INFO - __main__ - Starting database setup...
+2025-07-07 10:03:09,009 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:03:09,424 - CRITICAL - __main__ - An error occurred during database setup: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5433 failed: FATAL:  password authentication failed for user "emilios"
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-07 10:03:31,670 - INFO - root - Logging configured successfully.
+2025-07-07 10:03:31,670 - INFO - __main__ - Starting database setup...
+2025-07-07 10:03:31,718 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:03:32,126 - CRITICAL - __main__ - An error occurred during database setup: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5433 failed: FATAL:  password authentication failed for user "emilios"
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-07 10:05:10,834 - INFO - root - Logging configured successfully.
+2025-07-07 10:05:10,836 - INFO - __main__ - Starting database setup...
+2025-07-07 10:05:10,942 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:05:11,391 - CRITICAL - __main__ - An error occurred during database setup: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5433 failed: FATAL:  password authentication failed for user "emilios"
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-07 10:05:28,341 - INFO - root - Logging configured successfully.
+2025-07-07 10:05:28,342 - INFO - __main__ - Starting database setup...
+2025-07-07 10:05:28,435 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:05:30,833 - CRITICAL - __main__ - An error occurred during database setup: (psycopg2.OperationalError) connection to server at "173.249.24.215", port 5433 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-07 10:05:57,171 - INFO - root - Logging configured successfully.
+2025-07-07 10:05:57,172 - INFO - __main__ - Starting database setup...
+2025-07-07 10:05:57,238 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:05:59,931 - CRITICAL - __main__ - An error occurred during database setup: (psycopg2.OperationalError) connection to server at "173.249.24.215", port 5433 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-07 10:08:42,015 - INFO - root - Logging configured successfully.
+2025-07-07 10:08:42,015 - INFO - __main__ - Starting database setup...
+2025-07-07 10:08:42,080 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:08:42,477 - CRITICAL - __main__ - An error occurred during database setup: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5433 failed: FATAL:  password authentication failed for user "emilios"
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-07 10:09:17,238 - INFO - root - Logging configured successfully.
+2025-07-07 10:09:17,238 - INFO - __main__ - Starting database setup...
+2025-07-07 10:09:17,355 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:09:17,743 - CRITICAL - __main__ - An error occurred during database setup: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5433 failed: FATAL:  password authentication failed for user "emilios"
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-07 10:12:43,810 - INFO - root - Logging configured successfully.
+2025-07-07 10:12:43,810 - INFO - __main__ - Starting database setup...
+2025-07-07 10:12:43,866 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:12:44,302 - CRITICAL - __main__ - An error occurred during database setup: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5433 failed: FATAL:  password authentication failed for user "emilios"
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-07 10:12:55,792 - INFO - root - Logging configured successfully.
+2025-07-07 10:12:55,792 - INFO - __main__ - Starting database setup...
+2025-07-07 10:12:55,857 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-07 10:12:57,111 - INFO - __main__ - Executing CREATE TABLE IF NOT EXISTS...
+2025-07-07 10:12:57,266 - INFO - __main__ - Table 'contacts' ensured to exist.
+2025-07-07 10:12:57,267 - INFO - __main__ - Executing CREATE TABLE IF NOT EXISTS for 'contact_profiles'...
+2025-07-07 10:12:57,349 - INFO - __main__ - Table 'contact_profiles' ensured to exist.
+2025-07-07 10:12:57,350 - INFO - __main__ - Executing ADD COLUMN IF NOT EXISTS for 'profile_id'...
+2025-07-07 10:12:57,443 - INFO - __main__ - Column 'profile_id' and its foreign key ensured to exist.
+2025-07-07 10:12:57,444 - INFO - __main__ - Executing ADD CONSTRAINT IF NOT EXISTS...
+2025-07-07 10:12:57,509 - INFO - __main__ - Constraint 'unique_phone_number' ensured to exist.
+2025-07-07 10:12:57,571 - INFO - __main__ - Database setup completed successfully.

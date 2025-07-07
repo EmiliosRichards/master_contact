@@ -5,26 +5,43 @@ review_directory: "etl/review"
 log_file: "etl/logs/pipeline.log"
 deduplication:
   company_name_threshold: 90 # Fuzzy match similarity threshold
+  enable_fuzzy_matching: False # Set to false to disable fuzzy matching for performance
 
-# --- Column Mapping ---
-# Maps source CSV headers to target database columns
-column_mapping:
-  # Standard Mappings
-  "Company": "company_name"
-  "Company Name": "company_name"
-  "Website": "url"
-  "URL": "url"
-  "Company Phone": "phone_number"
-  "Phone": "phone_number"
-  "Industry": "industry"
-  
-  # Mappings for boolean flags or specific values
-  "is_b2b": "is_b2b"
-  
-  # Columns to be aggregated into the JSONB field
-  # 'additional_info' is the keyword for the JSONB catch-all
-  "additional_info":
-    - "# Employees"
-    - "sales_pitch"
-    - "match_reasoning"
-    - "serves_1000"
+# --- Data Source Profiles ---
+# Defines rules for different types of input files.
+# The pipeline will use the 'file_name_contains' string to identify the profile.
+data_source_profiles:
+  # Profile for Apollo-style files (e.g., SOR_7K)
+  "Apollo":
+    file_name_contains: "SOR"
+    promotion_rules:
+      company_name: ["Company Name", "Company"]
+      url: ["Website", "URL"]
+      phone_number: ["Company Phone"] # Apollo files only have one phone field
+      industry: ["Industry", "Industry_Category_Standardized"]
+      is_b2b: ["is_b2b"]
+      customer_target_segments: ["Customer Target Segents"]
+      # All other columns will be automatically placed in the JSONB field.
+
+  # Profile for Sales Outreach Report files
+  "SalesOutreachReport":
+    file_name_contains: "SalesOutreachReport"
+    promotion_rules:
+      company_name: ["Company Name", "company_name"]
+      url: ["URL", "url"]
+      # Prioritize the 'found_number' if it exists, otherwise use 'Original_Number'
+      phone_number: ["found_number", "Original_Number"]
+      industry: ["Industry", "industry"]
+      is_b2b: ["is_b2b", "B2B Indicator"]
+      customer_target_segments: ["Customer Target Segments"]
+      # All other columns will be automatically placed in the JSONB field.
+
+  "Regeneration":
+    file_name_contains: "mid_" # You can change this to match your file names
+    promotion_rules:
+      company_name: ["Company"]
+      url: ["Website"]
+      phone_number: ["Company phone"]
+      industry: ["Industry"]
+      is_b2b: ["is_b2b"]
+      customer_target_segments: [] # No customer target segments column was visible in the image

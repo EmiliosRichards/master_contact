@@ -1,142 +1,110 @@
-# Master Contact ETL Pipeline: Architectural Plan
+# ETL Pipeline Architecture Overview
 
-## 1. Overview & Goals
+This document provides a comprehensive overview of the ETL (Extract, Transform, Load) pipeline. The system is designed to process contact information from CSV files, clean and transform the data, perform deduplication, and load the results into a PostgreSQL database.
 
-The objective is to design and build a robust, configuration-driven ETL pipeline. This pipeline will ingest contact data from various CSV files, intelligently clean and transform the data, identify and merge duplicates, and load the curated information into a central PostgreSQL database.
+## 1. Core Objective
 
-The key design goals are:
-*   **Accuracy:** Ensure high data quality through intelligent deduplication and conflict resolution.
-*   **Flexibility:** Easily adapt to new data sources with different column names via a mapping configuration.
-*   **Maintainability:** A modular and well-documented codebase that is easy to understand and extend.
-*   **Security:** Manage sensitive credentials securely, separate from the application code.
+The primary goal of this pipeline is to automate the ingestion of new contact data from various CSV sources. It ensures data quality through cleaning, standardization, and a robust deduplication process, preventing redundant entries in the central `contacts` database.
 
-## 2. Proposed Architecture & Data Flow
+## 2. Pipeline Workflow
 
-The proposed architecture follows a standard Extract, Transform, Load pattern with distinct, modular stages.
+The ETL process is orchestrated by `etl/main.py` and follows a sequential, multi-stage workflow for each source file found.
 
 ```mermaid
 graph TD
-    subgraph Ingestion
-        A[Source CSV Files] --> B{ETL Orchestrator};
+    A[Start] --> B{Find CSV Files};
+    B --> C{Process File};
+    C --> D[Extract Data from CSV];
+    D --> E[Transform Data];
+    E --> F{Deduplicate Data};
+    F --> G[Load to Database];
+    G --> H{Move Processed File};
+    H --> I[End];
+
+    subgraph "Extraction"
+        D
     end
 
-    subgraph Configuration
-        C[config.yaml] --> B;
-        D[.env File] --> B;
+    subgraph "Transformation"
+        E[Apply Column Mapping & Clean Data]
     end
 
-    subgraph ETL Process
-        B --> E[Extract: Read CSV];
-        E --> F[Transform: Apply Column Mapping];
-        F --> G[Transform: Clean & Standardize Data];
-        G --> H{Deduplication Stage};
-        H --> I[1. Fuzzy Match Company Names];
-        H --> J[2. Check for Unique Phone Numbers];
-        I --> K[Merge/Flag Duplicates];
-        J --> K;
-        K --> L[Load: Insert/Update Master DB];
+    subgraph "Deduplication"
+        F
     end
 
-    subgraph Database
-        L --> M[PostgreSQL: contacts table];
+    subgraph "Loading"
+        G
     end
 
-    subgraph Monitoring
-        L --> N[Log File];
-        K --> O[Manual Review File];
-    end
+    style D fill:#f9f,stroke:#333,stroke-width:2px
+    style E fill:#f9f,stroke:#333,stroke-width:2px
+    style F fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
-## 3. Key Components & Process Steps
+### Stages:
 
-#### A. Configuration (The "Brain")
+1.  **Initialization**:
+    *   Loads the database connection URL from `.env`.
+    *   Reads configuration from `config.yaml`.
+    *   Sets up logging to both console and a rotating file (`etl/logs/pipeline.log`).
 
-*   **`.env` File:** For all sensitive information. This file should be included in `.gitignore`.
-    *   `DATABASE_URL="postgresql://user:pass@host:port/dbname"`
-*   **`config.yaml` File:** For all non-sensitive pipeline configuration. This makes the pipeline highly adaptable without changing code.
-    ```yaml
-    # config.yaml
-    source_directory: "etl/input_data"
-    processed_directory: "etl/processed_data"
-    review_directory: "etl/review"
-    log_file: "etl/logs/pipeline.log"
-    deduplication:
-      company_name_threshold: 90 # Fuzzy match similarity threshold
-    
-    # --- Column Mapping ---
-    # Maps source CSV headers to target database columns
-    column_mapping:
-      # Standard Mappings
-      "Company": "company_name"
-      "Company Name": "company_name"
-      "Website": "url"
-      "URL": "url"
-      "Company Phone": "phone_number"
-      "Phone": "phone_number"
-      "Industry": "industry"
-      
-      # Mappings for boolean flags or specific values
-      "is_b2b": "is_b2b"
-      
-      # Columns to be aggregated into the JSONB field
-      # 'additional_info' is the keyword for the JSONB catch-all
-      "additional_info":
-        - "# Employees"
-        - "sales_pitch"
-        - "match_reasoning"
-        - "serves_1000"
-    ```
+2.  **Pre-fetch for Deduplication**:
+    *   Before processing files, it connects to the database and fetches all existing `company_name` and `phone_number` values from the `contacts` table to be used in the deduplication step.
 
-#### B. Extraction
+3.  **Extraction (`etl/extract.py`)**:
+    *   Scans the `source_directory` (defined in `config.yaml`) for new `.csv` files.
+    *   Reads each CSV file into a pandas DataFrame.
 
-A script will scan the `source_directory` specified in `config.yaml` for new CSV files. It will read each file into a pandas DataFrame.
+4.  **Transformation (`etl/transform.py`)**:
+    *   **Column Mapping**: Renames columns from the source CSV to the target database schema based on the flexible `column_mapping` rules in `config.yaml`.
+    *   **JSON Aggregation**: Columns specified under `additional_info` in the config are consolidated into a single JSONB column.
+    *   **Data Cleaning**:
+        *   Removes special characters from phone numbers.
+        *   Trims whitespace from all string-based columns.
 
-#### C. Transformation
+5.  **Deduplication (`etl/main.py`)**:
+    *   **Phone Number Check**: An exact match is performed to discard any records where the `phone_number` already exists in the database.
+    *   **Fuzzy Company Name Matching**: Uses the `rapidfuzz` library to compare the `company_name` against existing names. If the similarity score exceeds the `company_name_threshold` from `config.yaml`, the record is flagged as a potential duplicate.
+    *   **Review Process**: Potential duplicates are not loaded. They are saved to a separate CSV in the `review_directory` for manual inspection.
 
-This is the core logic stage, performed in memory using pandas.
+6.  **Load (`etl/load.py`)**:
+    *   The final, cleaned, and unique data is loaded into the `contacts` table in the PostgreSQL database.
+    *   The operation uses an `append` method, as duplicates have already been filtered out.
 
-1.  **Column Mapping:** The `column_mapping` from `config.yaml` is applied. Any column in the CSV that is not a key in the mapping and not listed under `additional_info` will be dropped. Columns listed under `additional_info` will be consolidated into a new column containing a JSON object.
-2.  **Data Cleaning:**
-    *   Standardize phone numbers (e.g., remove `()`, `-`, ` `).
-    *   Trim whitespace from all string fields.
-    *   Handle missing values (`NaN`) appropriately.
-3.  **Deduplication:**
-    *   **Fetch Existing Data:** Load `company_name` and `phone_number` from the `contacts` table into a DataFrame for comparison.
-    *   **Fuzzy Match Company Names:** For each new contact, use `rapidfuzz` to check for existing companies with a similarity score above the `company_name_threshold`. Potential duplicates will be flagged. For this initial design, we will log them for manual review and skip insertion.
-    *   **Check Phone Number Uniqueness:** Filter out any new contacts whose standardized phone number already exists in the database. This prevents errors from the database's unique constraint.
+7.  **File Management**:
+    *   After a file is successfully processed, it is moved from the source directory to the `processed_directory`.
 
-#### D. Loading
+## 3. Key Components
 
-1.  **Database Constraint:** First, we will apply the unique constraint to the database:
-    ```sql
-    ALTER TABLE contacts ADD CONSTRAINT unique_phone_number UNIQUE (phone_number);
-    ```
-2.  **Insert/Update:** The cleaned, transformed, and deduplicated DataFrame is loaded into the `contacts` table. The initial implementation will use `to_sql(if_exists='append')`.
+*   **`etl/main.py`**: The main orchestrator that runs the entire pipeline.
+*   **`etl/extract.py`**: Handles finding and reading source CSV files.
+*   **`etl/transform.py`**: Contains logic for data cleaning and restructuring.
+*   **`etl/load.py`**: Manages database connections and data loading.
+*   **`etl/setup_database.py`**: Defines the `contacts` table schema and ensures it exists in the database.
+*   **`config.yaml`**: A critical configuration file that makes the pipeline adaptable. It controls file paths, column mappings, and the deduplication threshold.
+*   **`etl/requirements.txt`**: Lists all Python dependencies for the project.
 
-#### E. Logging & Monitoring
+## 4. Database Schema
 
-*   **`pipeline.log`:** A general log file will capture the pipeline's execution status, including files processed, rows added, and any errors encountered.
-*   **`duplicates_for_review.csv`:** Any potential duplicates identified by the fuzzy matching logic will be saved to this separate file for manual review.
+The target `contacts` table is defined in `etl/setup_database.py`.
 
-## 4. Proposed Project Structure
+**Table: `contacts`**
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `SERIAL` | `PRIMARY KEY` | Unique identifier for each record. |
+| `company_name` | `TEXT` | `NOT NULL` | Name of the company. |
+| `url` | `TEXT` | | Company website. |
+| `phone_number` | `TEXT` | `UNIQUE` | Contact phone number (enforces no duplicates). |
+| `is_b2b` | `BOOLEAN` | | Flag for B2B status. |
+| `industry` | `TEXT` | | Company's industry. |
+| `customer_target_segments` | `TEXT` | | Target customer segments. |
+| `additional_info` | `JSONB` | | Catch-all for extra data from source files. |
+| `tags` | `TEXT[]` | | Array of tags for categorization. |
+| `status` | `TEXT` | `DEFAULT 'active'` | Current status of the contact. |
+| `last_used` | `TIMESTAMP` | | Timestamp of the last interaction. |
+| `created_at` | `TIMESTAMP` | `DEFAULT NOW()` | Timestamp of record creation. |
+| `updated_at` | `TIMESTAMP` | `DEFAULT NOW()` | Timestamp of the last update. |
 
-To keep the project organized and scalable, I recommend the following directory structure:
-
-```
-master_contact/
-├── .env
-├── .gitignore
-├── config.yaml
-├── etl/
-│   ├── __init__.py
-│   ├── main.py                 # Orchestrator script to run the pipeline
-│   ├── extract.py              # Functions for reading data
-│   ├── transform.py            # Core transformation and deduplication logic
-│   ├── load.py                 # Functions for writing to the database
-│   ├── utils.py                # Helper functions, logging setup
-│   ├── input_data/             # Source CSVs are placed here
-│   ├── processed_data/         # Successfully processed files are moved here
-│   ├── review/                 # CSVs for manual review are saved here
-│   └── logs/
-│       └── pipeline.log
-└── requirements.txt
+This schema is robust, with a unique constraint on `phone_number` providing a hard stop for duplicates at the database level and a `JSONB` column for flexible data storage.
