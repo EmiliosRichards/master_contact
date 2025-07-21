@@ -192,5 +192,16 @@ def audit_contact(id):
         logger.error(f"An error occurred during audit: {e}")
 
 
+@cli.command()
+def count_contacts():
+    """Counts the total number of contacts in the database."""
+    logger.info("Counting total contacts...")
+    engine = get_engine()
+    try:
+        count = pd.read_sql("SELECT COUNT(id) FROM contacts", engine).iloc[0,0]
+        print(f"Total number of contacts: {count}")
+    except Exception as e:
+        logger.error(f"An error occurred while counting contacts: {e}")
+
 if __name__ == "__main__":
     cli()

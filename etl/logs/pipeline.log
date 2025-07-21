@@ -1785,3 +1785,189 @@ DETAIL:  Failing row contains (75535, null, MissingURL, null, null, null, null, 
 2025-07-07 15:31:32,992 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
 2025-07-07 15:31:32,993 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SOR_7K_20250627_163929_regenerated_final.csv
 2025-07-07 15:31:32,995 - INFO - root - ETL pipeline finished.
+2025-07-07 15:47:14,242 - INFO - root - Logging configured successfully.
+2025-07-07 15:47:14,244 - INFO - root - Counting total contacts...
+2025-07-07 15:47:14,262 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-08 11:51:22,771 - INFO - root - Logging configured successfully.
+2025-07-08 11:51:22,772 - INFO - root - ETL pipeline started.
+2025-07-08 11:51:22,995 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-08 11:51:25,921 - INFO - root - Loaded 17345 existing contacts for deduplication.
+2025-07-08 11:51:25,922 - INFO - etl.scripts.extract - Found 9 CSV files in etl/input_data.
+2025-07-08 11:51:25,923 - INFO - root - --- Processing file: SalesOutreachReport_20250701_163349_40000-41000.csv ---
+2025-07-08 11:51:25,923 - INFO - etl.scripts.extract - Extracting data from SalesOutreachReport_20250701_163349_40000-41000.csv...
+2025-07-08 11:51:25,989 - INFO - etl.scripts.extract - Successfully extracted 1001 rows from SalesOutreachReport_20250701_163349_40000-41000.csv.
+2025-07-08 11:51:25,990 - INFO - etl.scripts.transform - Starting two-tiered transformation...
+2025-07-08 11:51:25,995 - INFO - etl.scripts.transform - Applying promotion rules for profile: 'SalesOutreachReport'
+2025-07-08 11:51:26,042 - INFO - etl.scripts.transform - Transformation complete. Final columns: ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'additional_info']
+2025-07-08 11:51:26,044 - INFO - etl.scripts.transform - Starting data cleaning...
+2025-07-08 11:51:26,157 - INFO - etl.scripts.transform - Cleaned 'phone_number' column, converting blanks to NULL.
+2025-07-08 11:51:26,175 - INFO - etl.scripts.transform - Saved 119 duplicate rows to etl/dropped_duplicates\duplicates_20250708_115126.csv
+2025-07-08 11:51:26,176 - INFO - etl.scripts.transform - Removed 119 duplicate phone numbers from the source file.
+2025-07-08 11:51:26,177 - INFO - etl.scripts.transform - Data cleaning complete.
+2025-07-08 11:51:26,177 - INFO - root - Starting deduplication...
+2025-07-08 11:51:26,184 - INFO - root - Removed 7 rows with existing phone numbers.
+2025-07-08 11:51:26,184 - INFO - root - Fuzzy matching for company names is disabled.
+2025-07-08 11:51:26,184 - INFO - root - Deduplication complete. 875 rows remaining for insertion.
+2025-07-08 11:51:26,557 - INFO - etl.scripts.load - Found existing profile_id: 24 for hash: 82a18b470607eb3bb74278a9844540ec
+2025-07-08 11:51:26,557 - INFO - etl.scripts.load - Loading 875 rows with profile_id 24 into 'contacts' table...
+2025-07-08 11:51:28,311 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
+2025-07-08 11:51:28,312 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SalesOutreachReport_20250701_163349_40000-41000.csv
+2025-07-08 11:51:28,313 - INFO - root - --- Processing file: SalesOutreachReport_20250701_163422_41000-42000.csv ---
+2025-07-08 11:51:28,314 - INFO - etl.scripts.extract - Extracting data from SalesOutreachReport_20250701_163422_41000-42000.csv...
+2025-07-08 11:51:28,365 - INFO - etl.scripts.extract - Successfully extracted 1001 rows from SalesOutreachReport_20250701_163422_41000-42000.csv.
+2025-07-08 11:51:28,365 - INFO - etl.scripts.transform - Starting two-tiered transformation...
+2025-07-08 11:51:28,368 - INFO - etl.scripts.transform - Applying promotion rules for profile: 'SalesOutreachReport'
+2025-07-08 11:51:28,415 - INFO - etl.scripts.transform - Transformation complete. Final columns: ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'additional_info']
+2025-07-08 11:51:28,416 - INFO - etl.scripts.transform - Starting data cleaning...
+2025-07-08 11:51:28,532 - INFO - etl.scripts.transform - Cleaned 'phone_number' column, converting blanks to NULL.
+2025-07-08 11:51:28,549 - INFO - etl.scripts.transform - Saved 146 duplicate rows to etl/dropped_duplicates\duplicates_20250708_115128.csv
+2025-07-08 11:51:28,551 - INFO - etl.scripts.transform - Removed 146 duplicate phone numbers from the source file.
+2025-07-08 11:51:28,551 - INFO - etl.scripts.transform - Data cleaning complete.
+2025-07-08 11:51:28,552 - INFO - root - Starting deduplication...
+2025-07-08 11:51:28,560 - INFO - root - Removed 15 rows with existing phone numbers.
+2025-07-08 11:51:28,560 - INFO - root - Fuzzy matching for company names is disabled.
+2025-07-08 11:51:28,561 - INFO - root - Deduplication complete. 840 rows remaining for insertion.
+2025-07-08 11:51:28,935 - INFO - etl.scripts.load - Found existing profile_id: 24 for hash: 82a18b470607eb3bb74278a9844540ec
+2025-07-08 11:51:28,936 - INFO - etl.scripts.load - Loading 840 rows with profile_id 24 into 'contacts' table...
+2025-07-08 11:51:30,636 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
+2025-07-08 11:51:30,638 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SalesOutreachReport_20250701_163422_41000-42000.csv
+2025-07-08 11:51:30,639 - INFO - root - --- Processing file: SalesOutreachReport_20250701_163436_42000-43000.csv ---
+2025-07-08 11:51:30,639 - INFO - etl.scripts.extract - Extracting data from SalesOutreachReport_20250701_163436_42000-43000.csv...
+2025-07-08 11:51:30,694 - INFO - etl.scripts.extract - Successfully extracted 1001 rows from SalesOutreachReport_20250701_163436_42000-43000.csv.
+2025-07-08 11:51:30,695 - INFO - etl.scripts.transform - Starting two-tiered transformation...
+2025-07-08 11:51:30,697 - INFO - etl.scripts.transform - Applying promotion rules for profile: 'SalesOutreachReport'
+2025-07-08 11:51:30,745 - INFO - etl.scripts.transform - Transformation complete. Final columns: ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'additional_info']
+2025-07-08 11:51:30,746 - INFO - etl.scripts.transform - Starting data cleaning...
+2025-07-08 11:51:30,862 - INFO - etl.scripts.transform - Cleaned 'phone_number' column, converting blanks to NULL.
+2025-07-08 11:51:30,875 - INFO - etl.scripts.transform - Saved 127 duplicate rows to etl/dropped_duplicates\duplicates_20250708_115130.csv
+2025-07-08 11:51:30,877 - INFO - etl.scripts.transform - Removed 127 duplicate phone numbers from the source file.
+2025-07-08 11:51:30,878 - INFO - etl.scripts.transform - Data cleaning complete.
+2025-07-08 11:51:30,880 - INFO - root - Starting deduplication...
+2025-07-08 11:51:30,886 - INFO - root - Removed 5 rows with existing phone numbers.
+2025-07-08 11:51:30,886 - INFO - root - Fuzzy matching for company names is disabled.
+2025-07-08 11:51:30,886 - INFO - root - Deduplication complete. 869 rows remaining for insertion.
+2025-07-08 11:51:31,253 - INFO - etl.scripts.load - Found existing profile_id: 24 for hash: 82a18b470607eb3bb74278a9844540ec
+2025-07-08 11:51:31,254 - INFO - etl.scripts.load - Loading 869 rows with profile_id 24 into 'contacts' table...
+2025-07-08 11:51:32,441 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
+2025-07-08 11:51:32,442 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SalesOutreachReport_20250701_163436_42000-43000.csv
+2025-07-08 11:51:32,443 - INFO - root - --- Processing file: SalesOutreachReport_20250701_163449_43000-44000.csv ---
+2025-07-08 11:51:32,444 - INFO - etl.scripts.extract - Extracting data from SalesOutreachReport_20250701_163449_43000-44000.csv...
+2025-07-08 11:51:32,511 - INFO - etl.scripts.extract - Successfully extracted 1001 rows from SalesOutreachReport_20250701_163449_43000-44000.csv.
+2025-07-08 11:51:32,512 - INFO - etl.scripts.transform - Starting two-tiered transformation...
+2025-07-08 11:51:32,514 - INFO - etl.scripts.transform - Applying promotion rules for profile: 'SalesOutreachReport'
+2025-07-08 11:51:32,566 - INFO - etl.scripts.transform - Transformation complete. Final columns: ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'additional_info']
+2025-07-08 11:51:32,567 - INFO - etl.scripts.transform - Starting data cleaning...
+2025-07-08 11:51:32,695 - INFO - etl.scripts.transform - Cleaned 'phone_number' column, converting blanks to NULL.
+2025-07-08 11:51:32,712 - INFO - etl.scripts.transform - Saved 162 duplicate rows to etl/dropped_duplicates\duplicates_20250708_115132.csv
+2025-07-08 11:51:32,713 - INFO - etl.scripts.transform - Removed 162 duplicate phone numbers from the source file.
+2025-07-08 11:51:32,714 - INFO - etl.scripts.transform - Data cleaning complete.
+2025-07-08 11:51:32,715 - INFO - root - Starting deduplication...
+2025-07-08 11:51:32,720 - INFO - root - Removed 4 rows with existing phone numbers.
+2025-07-08 11:51:32,721 - INFO - root - Fuzzy matching for company names is disabled.
+2025-07-08 11:51:32,721 - INFO - root - Deduplication complete. 835 rows remaining for insertion.
+2025-07-08 11:51:33,137 - INFO - etl.scripts.load - Found existing profile_id: 24 for hash: 82a18b470607eb3bb74278a9844540ec
+2025-07-08 11:51:33,138 - INFO - etl.scripts.load - Loading 835 rows with profile_id 24 into 'contacts' table...
+2025-07-08 11:51:34,101 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
+2025-07-08 11:51:34,102 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SalesOutreachReport_20250701_163449_43000-44000.csv
+2025-07-08 11:51:34,103 - INFO - root - --- Processing file: SalesOutreachReport_20250701_163505_44000-45000.csv ---
+2025-07-08 11:51:34,104 - INFO - etl.scripts.extract - Extracting data from SalesOutreachReport_20250701_163505_44000-45000.csv...
+2025-07-08 11:51:34,148 - INFO - etl.scripts.extract - Successfully extracted 1001 rows from SalesOutreachReport_20250701_163505_44000-45000.csv.
+2025-07-08 11:51:34,148 - INFO - etl.scripts.transform - Starting two-tiered transformation...
+2025-07-08 11:51:34,151 - INFO - etl.scripts.transform - Applying promotion rules for profile: 'SalesOutreachReport'
+2025-07-08 11:51:34,195 - INFO - etl.scripts.transform - Transformation complete. Final columns: ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'additional_info']
+2025-07-08 11:51:34,196 - INFO - etl.scripts.transform - Starting data cleaning...
+2025-07-08 11:51:34,198 - WARNING - etl.scripts.transform - Dropped 328 rows due to missing company name.
+2025-07-08 11:51:34,274 - INFO - etl.scripts.transform - Cleaned 'phone_number' column, converting blanks to NULL.
+2025-07-08 11:51:34,289 - INFO - etl.scripts.transform - Saved 181 duplicate rows to etl/dropped_duplicates\duplicates_20250708_115134.csv
+2025-07-08 11:51:34,290 - INFO - etl.scripts.transform - Removed 181 duplicate phone numbers from the source file.
+2025-07-08 11:51:34,290 - INFO - etl.scripts.transform - Data cleaning complete.
+2025-07-08 11:51:34,291 - INFO - root - Starting deduplication...
+2025-07-08 11:51:34,300 - INFO - root - Removed 6 rows with existing phone numbers.
+2025-07-08 11:51:34,300 - INFO - root - Fuzzy matching for company names is disabled.
+2025-07-08 11:51:34,300 - INFO - root - Deduplication complete. 486 rows remaining for insertion.
+2025-07-08 11:51:34,652 - INFO - etl.scripts.load - Found existing profile_id: 24 for hash: 82a18b470607eb3bb74278a9844540ec
+2025-07-08 11:51:34,653 - INFO - etl.scripts.load - Loading 486 rows with profile_id 24 into 'contacts' table...
+2025-07-08 11:51:35,226 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
+2025-07-08 11:51:35,228 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SalesOutreachReport_20250701_163505_44000-45000.csv
+2025-07-08 11:51:35,230 - INFO - root - --- Processing file: SalesOutreachReport_20250701_163517_45000-46000.csv ---
+2025-07-08 11:51:35,230 - INFO - etl.scripts.extract - Extracting data from SalesOutreachReport_20250701_163517_45000-46000.csv...
+2025-07-08 11:51:35,259 - INFO - etl.scripts.extract - Successfully extracted 1001 rows from SalesOutreachReport_20250701_163517_45000-46000.csv.
+2025-07-08 11:51:35,260 - INFO - etl.scripts.transform - Starting two-tiered transformation...
+2025-07-08 11:51:35,263 - INFO - etl.scripts.transform - Applying promotion rules for profile: 'SalesOutreachReport'
+2025-07-08 11:51:35,298 - INFO - etl.scripts.transform - Transformation complete. Final columns: ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'additional_info']
+2025-07-08 11:51:35,299 - INFO - etl.scripts.transform - Starting data cleaning...
+2025-07-08 11:51:35,300 - WARNING - etl.scripts.transform - Dropped 474 rows due to missing company name.
+2025-07-08 11:51:35,331 - INFO - etl.scripts.transform - Cleaned 'phone_number' column, converting blanks to NULL.
+2025-07-08 11:51:35,344 - INFO - etl.scripts.transform - Saved 292 duplicate rows to etl/dropped_duplicates\duplicates_20250708_115135.csv
+2025-07-08 11:51:35,345 - INFO - etl.scripts.transform - Removed 292 duplicate phone numbers from the source file.
+2025-07-08 11:51:35,346 - INFO - etl.scripts.transform - Data cleaning complete.
+2025-07-08 11:51:35,346 - INFO - root - Starting deduplication...
+2025-07-08 11:51:35,351 - INFO - root - Removed 3 rows with existing phone numbers.
+2025-07-08 11:51:35,352 - INFO - root - Fuzzy matching for company names is disabled.
+2025-07-08 11:51:35,352 - INFO - root - Deduplication complete. 232 rows remaining for insertion.
+2025-07-08 11:51:35,797 - INFO - etl.scripts.load - Found existing profile_id: 24 for hash: 82a18b470607eb3bb74278a9844540ec
+2025-07-08 11:51:35,798 - INFO - etl.scripts.load - Loading 232 rows with profile_id 24 into 'contacts' table...
+2025-07-08 11:51:36,173 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
+2025-07-08 11:51:36,175 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SalesOutreachReport_20250701_163517_45000-46000.csv
+2025-07-08 11:51:36,177 - INFO - root - --- Processing file: SalesOutreachReport_20250701_163528_46000-47000.csv ---
+2025-07-08 11:51:36,177 - INFO - etl.scripts.extract - Extracting data from SalesOutreachReport_20250701_163528_46000-47000.csv...
+2025-07-08 11:51:36,229 - INFO - etl.scripts.extract - Successfully extracted 1001 rows from SalesOutreachReport_20250701_163528_46000-47000.csv.
+2025-07-08 11:51:36,229 - INFO - etl.scripts.transform - Starting two-tiered transformation...
+2025-07-08 11:51:36,231 - INFO - etl.scripts.transform - Applying promotion rules for profile: 'SalesOutreachReport'
+2025-07-08 11:51:36,274 - INFO - etl.scripts.transform - Transformation complete. Final columns: ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'additional_info']
+2025-07-08 11:51:36,275 - INFO - etl.scripts.transform - Starting data cleaning...
+2025-07-08 11:51:36,276 - WARNING - etl.scripts.transform - Dropped 75 rows due to missing company name.
+2025-07-08 11:51:36,406 - INFO - etl.scripts.transform - Cleaned 'phone_number' column, converting blanks to NULL.
+2025-07-08 11:51:36,415 - INFO - etl.scripts.transform - Saved 111 duplicate rows to etl/dropped_duplicates\duplicates_20250708_115136.csv
+2025-07-08 11:51:36,416 - INFO - etl.scripts.transform - Removed 111 duplicate phone numbers from the source file.
+2025-07-08 11:51:36,417 - INFO - etl.scripts.transform - Data cleaning complete.
+2025-07-08 11:51:36,417 - INFO - root - Starting deduplication...
+2025-07-08 11:51:36,423 - INFO - root - Removed 18 rows with existing phone numbers.
+2025-07-08 11:51:36,424 - INFO - root - Fuzzy matching for company names is disabled.
+2025-07-08 11:51:36,424 - INFO - root - Deduplication complete. 797 rows remaining for insertion.
+2025-07-08 11:51:36,792 - INFO - etl.scripts.load - Found existing profile_id: 24 for hash: 82a18b470607eb3bb74278a9844540ec
+2025-07-08 11:51:36,792 - INFO - etl.scripts.load - Loading 797 rows with profile_id 24 into 'contacts' table...
+2025-07-08 11:51:37,487 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
+2025-07-08 11:51:37,489 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SalesOutreachReport_20250701_163528_46000-47000.csv
+2025-07-08 11:51:37,490 - INFO - root - --- Processing file: SalesOutreachReport_20250701_163552_48000-49000.csv ---
+2025-07-08 11:51:37,491 - INFO - etl.scripts.extract - Extracting data from SalesOutreachReport_20250701_163552_48000-49000.csv...
+2025-07-08 11:51:37,550 - INFO - etl.scripts.extract - Successfully extracted 998 rows from SalesOutreachReport_20250701_163552_48000-49000.csv.
+2025-07-08 11:51:37,551 - INFO - etl.scripts.transform - Starting two-tiered transformation...
+2025-07-08 11:51:37,554 - INFO - etl.scripts.transform - Applying promotion rules for profile: 'SalesOutreachReport'
+2025-07-08 11:51:37,614 - INFO - etl.scripts.transform - Transformation complete. Final columns: ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'additional_info']
+2025-07-08 11:51:37,616 - INFO - etl.scripts.transform - Starting data cleaning...
+2025-07-08 11:51:37,733 - INFO - etl.scripts.transform - Cleaned 'phone_number' column, converting blanks to NULL.
+2025-07-08 11:51:37,742 - INFO - etl.scripts.transform - Saved 99 duplicate rows to etl/dropped_duplicates\duplicates_20250708_115137.csv
+2025-07-08 11:51:37,743 - INFO - etl.scripts.transform - Removed 99 duplicate phone numbers from the source file.
+2025-07-08 11:51:37,743 - INFO - etl.scripts.transform - Data cleaning complete.
+2025-07-08 11:51:37,744 - INFO - root - Starting deduplication...
+2025-07-08 11:51:37,752 - INFO - root - Removed 7 rows with existing phone numbers.
+2025-07-08 11:51:37,752 - INFO - root - Fuzzy matching for company names is disabled.
+2025-07-08 11:51:37,752 - INFO - root - Deduplication complete. 892 rows remaining for insertion.
+2025-07-08 11:51:38,106 - INFO - etl.scripts.load - Found existing profile_id: 24 for hash: 82a18b470607eb3bb74278a9844540ec
+2025-07-08 11:51:38,107 - INFO - etl.scripts.load - Loading 892 rows with profile_id 24 into 'contacts' table...
+2025-07-08 11:51:38,859 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
+2025-07-08 11:51:38,861 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SalesOutreachReport_20250701_163552_48000-49000.csv
+2025-07-08 11:51:38,863 - INFO - root - --- Processing file: SalesOutreachReport_20250701_163642_49000-50000.csv ---
+2025-07-08 11:51:38,863 - INFO - etl.scripts.extract - Extracting data from SalesOutreachReport_20250701_163642_49000-50000.csv...
+2025-07-08 11:51:38,897 - INFO - etl.scripts.extract - Successfully extracted 1001 rows from SalesOutreachReport_20250701_163642_49000-50000.csv.
+2025-07-08 11:51:38,898 - INFO - etl.scripts.transform - Starting two-tiered transformation...
+2025-07-08 11:51:38,901 - INFO - etl.scripts.transform - Applying promotion rules for profile: 'SalesOutreachReport'
+2025-07-08 11:51:38,939 - INFO - etl.scripts.transform - Transformation complete. Final columns: ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'additional_info']
+2025-07-08 11:51:38,940 - INFO - etl.scripts.transform - Starting data cleaning...
+2025-07-08 11:51:39,048 - INFO - etl.scripts.transform - Cleaned 'phone_number' column, converting blanks to NULL.
+2025-07-08 11:51:39,061 - INFO - etl.scripts.transform - Saved 128 duplicate rows to etl/dropped_duplicates\duplicates_20250708_115139.csv
+2025-07-08 11:51:39,062 - INFO - etl.scripts.transform - Removed 128 duplicate phone numbers from the source file.
+2025-07-08 11:51:39,062 - INFO - etl.scripts.transform - Data cleaning complete.
+2025-07-08 11:51:39,063 - INFO - root - Starting deduplication...
+2025-07-08 11:51:39,069 - INFO - root - Removed 14 rows with existing phone numbers.
+2025-07-08 11:51:39,070 - INFO - root - Fuzzy matching for company names is disabled.
+2025-07-08 11:51:39,070 - INFO - root - Deduplication complete. 859 rows remaining for insertion.
+2025-07-08 11:51:39,408 - INFO - etl.scripts.load - Found existing profile_id: 24 for hash: 82a18b470607eb3bb74278a9844540ec
+2025-07-08 11:51:39,410 - INFO - etl.scripts.load - Loading 859 rows with profile_id 24 into 'contacts' table...
+2025-07-08 11:51:40,163 - INFO - etl.scripts.load - Successfully loaded data into 'contacts'.
+2025-07-08 11:51:40,165 - INFO - etl.scripts.load - Moved processed file to: etl\processed_data\SalesOutreachReport_20250701_163642_49000-50000.csv
+2025-07-08 11:51:40,167 - INFO - root - ETL pipeline finished.
+2025-07-08 11:51:55,866 - INFO - root - Logging configured successfully.
+2025-07-08 11:51:55,867 - INFO - root - Counting total contacts...
+2025-07-08 11:51:55,883 - INFO - etl.scripts.load - Database engine created successfully.

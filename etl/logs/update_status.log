@@ -1,0 +1,5 @@
+2025-07-08 12:47:05,252 - INFO - root - Logging configured successfully.
+2025-07-08 12:47:05,253 - INFO - __main__ - --- Starting Contact Status Update from file: sample_phones.txt ---
+2025-07-08 12:47:05,254 - INFO - __main__ - Found 3 unique phone numbers to process.
+2025-07-08 12:47:05,282 - INFO - etl.scripts.load - Database engine created successfully.
+2025-07-08 12:47:07,114 - INFO - __main__ - --- Update process finished. Successfully updated 0 contacts. ---
