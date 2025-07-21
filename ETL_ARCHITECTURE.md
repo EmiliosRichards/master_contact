@@ -15,7 +15,7 @@ graph TD
     A[Start] --> B{Find CSV Files};
     B --> C{Process File};
     C --> D[Extract Data from CSV];
-    D --> E[Transform Data];
+    D --> E[Transform Data & Profile Schema];
     E --> F{Deduplicate Data};
     F --> G[Load to Database];
     G --> H{Move Processed File};
@@ -25,8 +25,8 @@ graph TD
         D
     end
 
-    subgraph "Transformation"
-        E[Apply Column Mapping & Clean Data]
+    subgraph "Transformation & Profiling"
+        E
     end
 
     subgraph "Deduplication"
@@ -57,12 +57,12 @@ graph TD
     *   Scans the `source_directory` (defined in `config.yaml`) for new `.csv` files.
     *   Reads each CSV file into a pandas DataFrame.
 
-4.  **Transformation (`etl/transform.py`)**:
-    *   **Column Mapping**: Renames columns from the source CSV to the target database schema based on the flexible `column_mapping` rules in `config.yaml`.
-    *   **JSON Aggregation**: Columns specified under `additional_info` in the config are consolidated into a single JSONB column.
-    *   **Data Cleaning**:
-        *   Removes special characters from phone numbers.
-        *   Trims whitespace from all string-based columns.
+4.  **Transformation & Profiling (`etl/transform.py`)**:
+    *   **Dynamic Profiling**: Before transformation, the script captures the exact schema (column names) of the source CSV. It generates a unique hash for this schema and stores it in the `contact_profiles` table. This allows for tracking the structure of every dataset that enters the pipeline.
+    *   **Two-Tiered Transformation**:
+        1.  **Preservation**: The entire raw data from each row is serialized into a `JSONB` field (`additional_info`). This ensures no data is ever lost.
+        2.  **Promotion**: Key fields (like `company_name`, `phone_number`, etc.) are "promoted" from the raw data into the main structured columns of the `contacts` table. The promotion rules are defined in `config.yaml` for each data source profile, allowing the system to intelligently pick the best available data (e.g., choosing `found_number` over `Original_Number`).
+    *   **Data Cleaning**: Standardizes phone numbers, trims whitespace, and ensures data types are correct (e.g., converting "yes"/'no" to booleans).
 
 5.  **Deduplication (`etl/main.py`)**:
     *   **Phone Number Check**: An exact match is performed to discard any records where the `phone_number` already exists in the database.
@@ -70,6 +70,7 @@ graph TD
     *   **Review Process**: Potential duplicates are not loaded. They are saved to a separate CSV in the `review_directory` for manual inspection.
 
 6.  **Load (`etl/load.py`)**:
+    *   Assigns the appropriate `profile_id` (from the `contact_profiles` table) to each record.
     *   The final, cleaned, and unique data is loaded into the `contacts` table in the PostgreSQL database.
     *   The operation uses an `append` method, as duplicates have already been filtered out.
 
@@ -81,19 +82,20 @@ graph TD
 *   **`etl/main.py`**: The main orchestrator that runs the entire pipeline.
 *   **`etl/extract.py`**: Handles finding and reading source CSV files.
 *   **`etl/transform.py`**: Contains logic for data cleaning and restructuring.
-*   **`etl/load.py`**: Manages database connections and data loading.
-*   **`etl/setup_database.py`**: Defines the `contacts` table schema and ensures it exists in the database.
-*   **`config.yaml`**: A critical configuration file that makes the pipeline adaptable. It controls file paths, column mappings, and the deduplication threshold.
+*   **`etl/load.py`**: Manages database connections, data loading, and profile creation.
+*   **`etl/setup_database.py`**: Defines the database schema (`contacts` and `contact_profiles` tables) and ensures it exists.
+*   **`config.yaml`**: A critical configuration file that makes the pipeline adaptable. It controls file paths, data source profiles, promotion rules, and the deduplication threshold.
 *   **`etl/requirements.txt`**: Lists all Python dependencies for the project.
 
 ## 4. Database Schema
 
-The target `contacts` table is defined in `etl/setup_database.py`.
+The database schema is defined in `etl/setup_database.py` and consists of two core tables.
 
 **Table: `contacts`**
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
 | `id` | `SERIAL` | `PRIMARY KEY` | Unique identifier for each record. |
+| `profile_id` | `INTEGER` | `FOREIGN KEY` | Links to the `contact_profiles` table. |
 | `company_name` | `TEXT` | `NOT NULL` | Name of the company. |
 | `url` | `TEXT` | | Company website. |
 | `phone_number` | `TEXT` | `UNIQUE` | Contact phone number (enforces no duplicates). |
@@ -107,4 +109,13 @@ The target `contacts` table is defined in `etl/setup_database.py`.
 | `created_at` | `TIMESTAMP` | `DEFAULT NOW()` | Timestamp of record creation. |
 | `updated_at` | `TIMESTAMP` | `DEFAULT NOW()` | Timestamp of the last update. |
 
-This schema is robust, with a unique constraint on `phone_number` providing a hard stop for duplicates at the database level and a `JSONB` column for flexible data storage.
+**Table: `contact_profiles`**
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `SERIAL` | `PRIMARY KEY` | Unique identifier for the profile. |
+| `profile_hash` | `TEXT` | `UNIQUE` | MD5 hash of the sorted list of JSON keys. |
+| `json_keys` | `TEXT[]` | `NOT NULL` | An array of the column names from the source file. |
+| `contact_count` | `INTEGER` | `DEFAULT 1` | The number of contacts associated with this profile. |
+| `created_at` | `TIMESTAMP` | `DEFAULT NOW()` | Timestamp of profile creation. |
+
+This two-table schema provides a robust system for both storing structured contact data and tracking the metadata of its origin.
