@@ -44,6 +44,18 @@ CREATE TABLE IF NOT EXISTS contact_profiles (
 );
 """
 
+CREATE_ETL_RUNS_TABLE_SQL = """
+CREATE TABLE IF NOT EXISTS etl_runs (
+    id SERIAL PRIMARY KEY,
+    run_at TIMESTAMP DEFAULT NOW(),
+    files_processed TEXT[],
+    contacts_added INTEGER,
+    tag_used TEXT,
+    status TEXT,
+    finished_at TIMESTAMP
+);
+"""
+
 ADD_PROFILE_ID_COLUMN_SQL = """
 DO $$
 BEGIN
@@ -99,6 +111,10 @@ def setup_database():
             connection.execute(text(ADD_CONSTRAINT_SQL))
             logger.info("Constraint 'unique_phone_number' ensured to exist.")
             
+            logger.info("Executing CREATE TABLE IF NOT EXISTS for 'etl_runs'...")
+            connection.execute(text(CREATE_ETL_RUNS_TABLE_SQL))
+            logger.info("Table 'etl_runs' ensured to exist.")
+
             # Commit the transaction
             connection.commit()
 

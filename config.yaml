@@ -3,6 +3,7 @@ source_directory: "etl/input_data"
 processed_directory: "etl/processed_data"
 review_directory: "etl/review"
 log_file: "etl/logs/pipeline.log"
+tag: "Apollo but PhoneExtraction Bias" # A default tag for the ETL run
 deduplication:
   company_name_threshold: 90 # Fuzzy match similarity threshold
   enable_fuzzy_matching: False # Set to false to disable fuzzy matching for performance

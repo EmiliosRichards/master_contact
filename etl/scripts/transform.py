@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import json
 from typing import Dict, List
+from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
@@ -65,8 +66,16 @@ def apply_transformations(df: pd.DataFrame, file_path: str, config: Dict) -> tup
     logger.debug(f"Before assembly, df columns are: {df.columns.tolist()}")
     
     # Define the final structured columns we want in our table
-    structured_columns = ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments']
+    structured_columns = ['company_name', 'url', 'phone_number', 'industry', 'is_b2b', 'customer_target_segments', 'tags']
     
+    # Add the tag from the config as a list to the 'tags' column
+    tag = config.get("tag")
+    if tag:
+        df['tags'] = [[tag] for _ in range(len(df))]
+        logger.info(f"Applied tag '{tag}' to the dataset as a list.")
+    else:
+        df['tags'] = [[] for _ in range(len(df))] # Ensure the column exists with an empty list
+
     # Create the additional_info column from the preserved raw data
     logger.debug("Creating 'additional_info' from raw_json_df...")
     # For each row, create a dictionary and then convert it to a JSON string.
@@ -104,12 +113,56 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
     # --- Data Validation: Ensure required fields are present ---
-    # Drop rows where company_name is null, as it's a required field in the DB
+    # --- Data Validation and Enrichment ---
+    def derive_name_from_url(url):
+        if pd.isna(url):
+            return None
+        try:
+            # Ensure URL has a scheme for proper parsing
+            if '://' not in str(url):
+                url = 'http://' + str(url)
+            
+            netloc = urlparse(url).netloc
+            if not netloc:
+                return None
+            
+            # Extract the domain name (e.g., 'google' from 'www.google.com')
+            domain = netloc.replace('www.', '')
+            company_name = domain.split('.')[0]
+            
+            # Return the capitalized name if found
+            return company_name.capitalize() if company_name else None
+        except Exception:
+            return None
+
+    # Attempt to fill missing company names from URLs
+    if 'company_name' in df.columns and 'url' in df.columns:
+        missing_name_mask = df['company_name'].isnull() | (df['company_name'].astype(str).str.strip() == '')
+        
+        if missing_name_mask.any():
+            logger.info("Attempting to derive missing company names from URLs...")
+            derived_names = df.loc[missing_name_mask, 'url'].apply(derive_name_from_url)
+            df.loc[missing_name_mask, 'company_name'] = df.loc[missing_name_mask, 'company_name'].fillna(derived_names)
+            
+            num_derived = derived_names.notna().sum()
+            if num_derived > 0:
+                logger.info(f"Successfully derived {num_derived} company names.")
+
+    # --- Final Validation: Check for rows that still have missing company names ---
     if 'company_name' in df.columns:
-        original_rows = len(df)
-        df.dropna(subset=['company_name'], inplace=True)
-        if len(df) < original_rows:
-            logger.warning(f"Dropped {original_rows - len(df)} rows due to missing company name.")
+        invalid_rows_mask = df['company_name'].isnull() | (df['company_name'].astype(str).str.strip() == '')
+        invalid_df = df[invalid_rows_mask]
+
+        if not invalid_df.empty:
+            invalid_dir = "etl/invalid_records"
+            os.makedirs(invalid_dir, exist_ok=True)
+            timestamp = pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')
+            invalid_path = os.path.join(invalid_dir, f"missing_company_name_{timestamp}.csv")
+            invalid_df.to_csv(invalid_path, index=False)
+            logger.warning(f"Saved {len(invalid_df)} rows with missing company name to {invalid_path}")
+
+            # Remove any remaining invalid rows from the main dataframe
+            df = df[~invalid_rows_mask]
 
     # Clean phone numbers: remove common characters and whitespace
     if "phone_number" in df.columns:
@@ -126,9 +179,9 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         df['phone_number'] = df['phone_number'].apply(clean_phone)
         logger.info("Cleaned 'phone_number' column, converting blanks to NULL.")
 
-    # Trim whitespace from all object (string) columns, EXCLUDING the additional_info column
+    # Trim whitespace from all object (string) columns, EXCLUDING specific columns
     for col in df.select_dtypes(include=["object"]).columns:
-        if col != 'additional_info':
+        if col not in ['additional_info', 'tags']:
             df[col] = df[col].str.strip()
         
     # Drop duplicates within the dataframe based on phone number

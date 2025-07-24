@@ -12,3 +12,6 @@ __pycache__/
 dropped_duplicates/
 
 review/
+
+processed_data/
+input_data/ 

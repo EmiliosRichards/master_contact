@@ -22,7 +22,7 @@ def get_db_engine() -> Engine:
     if not database_url:
         logger.error("DATABASE_URL environment variable not set.")
         raise ValueError("DATABASE_URL is not configured.")
-    
+
     try:
         engine = create_engine(database_url)
         logger.info("Database engine created successfully.")

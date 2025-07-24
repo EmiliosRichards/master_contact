@@ -18,7 +18,7 @@ from etl.scripts.load import get_db_engine
 from etl.scripts.utils import setup_logging
 
 # --- Configuration ---
-load_dotenv()
+load_dotenv(override=True)
 with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
@@ -202,6 +202,23 @@ def count_contacts():
         print(f"Total number of contacts: {count}")
     except Exception as e:
         logger.error(f"An error occurred while counting contacts: {e}")
+
+@cli.command()
+@click.option('--limit', default=20, help='Number of past runs to display.')
+def view_etl_runs(limit):
+    """Displays a history of ETL pipeline runs."""
+    logger.info(f"Fetching the last {limit} ETL runs...")
+    engine = get_engine()
+    try:
+        df = pd.read_sql(f"SELECT id, run_at, finished_at, status, tag_used, files_processed, contacts_added FROM etl_runs ORDER BY run_at DESC LIMIT {limit}", engine)
+        if df.empty:
+            print("No ETL runs found in the database.")
+            return
+        print("--- ETL Run History ---")
+        print(df.to_string())
+        print("-----------------------")
+    except Exception as e:
+        logger.error(f"An error occurred while fetching ETL runs: {e}")
 
 if __name__ == "__main__":
     cli()
